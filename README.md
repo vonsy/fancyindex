@@ -1,0 +1,2 @@
+# fancyindex
+nginx with fancyindex
