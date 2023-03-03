@@ -13,19 +13,19 @@ http://localhsot/, No user, password required
 ### Docker Run
 ```bash
 docker run -d \
-	--name fancyindex \
-	-e PUID=3000 \
-	-e PGID=3000 \
-	-e TZ=Asia/Shanghai \
-    -e USER=Neo \
-    -e PASSWORD=RedPill$ \
-	-p 80:80 \
-    -p 443:443 \
-    -v /zion/share/nginx/nginx.conf:/etc/nginx/nginx.conf \
-    -v /zion/share/private:/private \
-    -v /zion/share/public:/public \
-	--restart unless-stopped \
-	vonsy/fancyindex:1.23.3
+  --name fancyindex \
+  -e PUID=3000 \
+  -e PGID=3000 \
+  -e TZ=Asia/Shanghai \
+  -e USER=Neo \
+  -e PASSWORD=RedPill$ \
+  -p 80:80 \
+  -p 443:443 \
+  -v /zion/share/nginx/nginx.conf:/etc/nginx/nginx.conf \
+  -v /zion/share/private:/private \
+  -v /zion/share/public:/public \
+  --restart unless-stopped \
+  vonsy/fancyindex:1.23.3
 ```
 
 ### Docker Compose File
