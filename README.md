@@ -65,8 +65,13 @@ docker cp fancyindex:/etc/nginx/nginx.conf ~/Desktop/
 
 
 Use, reference the following programs, modules, themes, thanks.
+
 http://nginx.org
+
 https://github.com/aperezdc/ngx-fancyindex
+
 https://github.com/TheInsomniac/Nginx-Fancyindex-Theme
+
 https://github.com/vonsy/Nginx-Fancyindex-Theme, Fix Chinese display bugs
+
 https://github.com/nginxinc/docker-nginx/blob/master/mainline/debian/Dockerfile
