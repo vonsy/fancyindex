@@ -16,11 +16,11 @@ RUN set -x \
     && apt install --no-install-recommends --no-install-suggests -y ca-certificates wget libpcre3 libpcre3-dev libssl-dev zlib1g zlib1g-dev build-essential g++ \
     && rm -rf /var/lib/apt/lists/* \
     && wget --no-check-certificate $NGINX_URL && tar zxf ${NGINX_VERSION}.tar.gz \
-    && wget --no-check-certificate $MODULE_URL && tar zxf v${MODULE_VERSION}.tar.gz \
-    && wget --no-check-certificate $THEME_URL && tar zxf v${THEME_VERSION}.tar.gz \
+    && wget --no-check-certificate $MODULE_URL && tar zxf v${MODULE_VERSION}.tar.gz && mv ngx-fancyindex-${MODULE_VERSION} ngx-fancyindex \
+    && wget --no-check-certificate $THEME_URL && tar zxf v${THEME_VERSION}.tar.gz && mv Nginx-Fancyindex-Theme-${THEME_VERSION} Nginx-Fancyindex-Theme \
     && rm -f ${NGINX_VERSION}.tar.gz v${MODULE_VERSION}.tar.gz v${THEME_VERSION}.tar.gz \
     && cd $NGINX_VERSION \
-    && ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=www --group=www --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --add-module=../ngx-fancyindex-${MODULE_VERSION} \
+    && ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=www --group=www --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --add-module=../ngx-fancyindex \
     && make && make install
     # Multi-layer build, base image is only used for compilation, no need to delete temporary files
     # && apt remove -y ca-certificates wget libpcre3 libpcre3-dev libssl-dev zlib1g zlib1g-dev build-essential g++ \
@@ -45,7 +45,7 @@ ENV PASSWORD=RedPill$
 
 COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
 COPY --from=builder /etc/nginx /etc/nginx
-COPY --from=builder /Nginx-Fancyindex-Theme-1.0.0 /Nginx-Fancyindex-Theme-1.0.0
+COPY --from=builder /Nginx-Fancyindex-Theme /Nginx-Fancyindex-Theme
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY docker-entrypoint.sh /
 
@@ -54,7 +54,7 @@ RUN set -x \
     && groupadd --gid $PGID www \
     && useradd --system --no-create-home --shell /bin/false --uid $PUID www --gid $PGID --groups $PGID \
     && mkdir -p /var/log/nginx /var/cache/nginx /etc/nginx/logs /public /private \
-    && chown -R ${PUID}:${PGID} /docker-entrypoint.sh /usr/sbin/nginx /etc/nginx /var/log/nginx /var/cache/nginx /Nginx-Fancyindex-Theme-1.0.0 /public /private \
+    && chown -R ${PUID}:${PGID} /docker-entrypoint.sh /usr/sbin/nginx /etc/nginx /var/log/nginx /var/cache/nginx /Nginx-Fancyindex-Theme /public /private \
     && chmod +x /docker-entrypoint.sh \
     && apt update \
     && apt install --no-install-recommends --no-install-suggests -y apache2-utils \
