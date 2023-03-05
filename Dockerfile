@@ -2,7 +2,7 @@ FROM debian:latest AS builder
 
 ARG NGINX_VERSION=nginx-1.23.3
 ARG MODULE_VERSION=0.5.2
-ARG THEME_VERSION=1.0.0
+ARG THEME_VERSION=1.0.1
 ARG NGINX_URL=http://nginx.org/download/${NGINX_VERSION}.tar.gz
 ARG MODULE_URL=https://github.com/aperezdc/ngx-fancyindex/archive/refs/tags/v${MODULE_VERSION}.tar.gz
 ARG THEME_URL=https://github.com/vonsy/Nginx-Fancyindex-Theme/archive/refs/tags/v${THEME_VERSION}.tar.gz
