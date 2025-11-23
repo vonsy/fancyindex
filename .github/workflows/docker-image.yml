@@ -2,49 +2,42 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    tags:
+      - 'v*' 
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Read version from Dockerfile
-        id: version
-        run: |
-          # 从 Dockerfile 提取 ARG VERSION=xxxx
-          VER=$(grep "ARG VERSION=" Dockerfile | head -n 1 | cut -d '=' -f2)
-          echo "current=$VER" >> $GITHUB_OUTPUT
-
-          # 自动版本号 +1（仅最后一段）
-          NEXT=$(echo $VER | awk -F. '{OFS="."; $NF=$NF+1; print}')
-          echo "next=$NEXT" >> $GITHUB_OUTPUT
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: vonsy/fancyindex
+          tags: |
+            type=ref,event=tag
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+
       - name: Build and push Multi-Arch
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args: |
-            VERSION=${{ steps.version.outputs.next }}
-          tags: |
-            vonsy/fancyindex:${{ steps.version.outputs.next }}
-            vonsy/fancyindex:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
