@@ -56,6 +56,22 @@ services:
 docker build --target builder -t fancyindexbuilder:1.23.3 .
 docker build -t fancyindex:1.23.3 .
 ```
+### Multi-Arch Images
+```
+# Create a new builder instance named mybuilder and switch to use it
+docker buildx create --name mybuilder --use
+
+# Start (initialize) this builder
+docker buildx inspect --bootstrap
+
+# Build & Push
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t vonsy/fancyindex:1.23.3 \
+  -t vonsy/fancyindex:latest \
+  . \
+  --push
+```
 
 ### Customized settings
 If you need to customize the settings, use docker cp to copy out the nginx.conf configuration file, modify the settings and mount it.
