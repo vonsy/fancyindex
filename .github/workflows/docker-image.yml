@@ -14,13 +14,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 从 Dockerfile 读取版本号 ARG VERSION=xxx
       - name: Read version from Dockerfile
         id: version
         run: |
-          VER=$(grep -oP '(?<=ARG VERSION=)[0-9]+\.[0-9]+\.[0-9]+' Dockerfile)
+          # 从 Dockerfile 提取 ARG VERSION=xxxx
+          VER=$(grep "ARG VERSION=" Dockerfile | head -n 1 | cut -d '=' -f2)
           echo "current=$VER" >> $GITHUB_OUTPUT
 
+          # 自动版本号 +1（仅最后一段）
           NEXT=$(echo $VER | awk -F. '{OFS="."; $NF=$NF+1; print}')
           echo "next=$NEXT" >> $GITHUB_OUTPUT
 
