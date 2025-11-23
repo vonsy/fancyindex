@@ -3,7 +3,7 @@ name: Docker Image CI
 on:
   push:
     tags:
-      - 'v*' 
+      - 'v*'  # 触发规则：例如 v1.23.3
 
 jobs:
   build:
@@ -24,14 +24,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # --- 核心修改部分开始 ---
       - name: Docker Metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: vonsy/fancyindex
           tags: |
-            type=ref,event=tag
+            # 1. 处理版本号：自动去掉 git tag 前面的 'v'
+            # 输入 v1.23.3 -> 输出 1.23.3
+            type=semver,pattern={{version}}
+            
+            # 2. 处理 Latest：只要是 tag 事件，就额外打上 latest 标签
             type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+      # --- 核心修改部分结束 ---
 
       - name: Build and push Multi-Arch
         uses: docker/build-push-action@v5
@@ -39,5 +45,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          # 自动引用上面生成的两个 tags (1.23.3 和 latest)
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
