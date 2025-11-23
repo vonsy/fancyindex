@@ -7,7 +7,7 @@ http://localhost/private, Login required
 http://localhost/private
 ![after login](img/private-after-login.png)
 
-http://localhsot/, No user, password required
+http://localhost/, No user, password required
 ![no user,password required ](img/public-no-user-password-required.png)
 
 ### Docker Run
@@ -25,7 +25,7 @@ docker run -d \
   -v /zion/share/private:/private \
   -v /zion/share/public:/public \
   --restart unless-stopped \
-  vonsy/fancyindex:1.23.3
+  vonsy/fancyindex:latest
 ```
 
 ### Docker Compose File
